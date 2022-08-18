@@ -2,6 +2,8 @@ import React from "react";
 import { Box, Tab } from "@mui/material";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import PhoneBook from "./PhoneBook";
+import LogIn from "./Login";
+import SignUp from "./SignUp";
 
 const Layout = () => {
   const [value, setValue] = React.useState("3");
@@ -24,10 +26,10 @@ const Layout = () => {
         <PhoneBook />
         </TabPanel>
         <TabPanel value="2">
-          <div>Log in</div>
+          <LogIn/>
         </TabPanel>
         <TabPanel value="3">
-        <div>Sign up</div>
+        <SignUp/>
         </TabPanel>
       </TabContext>
     </Box>
