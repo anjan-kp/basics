@@ -1,82 +1,84 @@
 import { Button, Paper, Grid, TextField, FormControl } from '@mui/material';
-import {useRef, useState} from "react";
+import { useRef, useState } from "react";
 
 
-const SignUp = ({ setValue}) =>{
+const SignUp = ({ setValue }) => {
   const [userName, setUserName] = useState("")
   const [password, setPassword] = useState("")
   const [unameErr, setUnameErr] = useState(false);
   const [pwdErr, setPwdErr] = useState(false);
   const [confirmPwd, setConfirmPwd] = useState("");
   const [confirmPwdErr, setConfirmPwdErr] = useState(false)
-  
-  
-   
-    const handleUserName = (e) => {
-      const val = e.target.value;
-      setUserName(val);
-      setUnameErr(false)
+
+
+
+  const handleUserName = (e) => {
+    const val = e.target.value;
+    setUserName(val);
+    setUnameErr(false)
+  }
+
+  const handlePassword = (e) => {
+    const pwd = e.target.value;
+    setPassword(pwd)
+    setPwdErr(false)
+  }
+
+  const handleConfirmPassword = (e) => {
+    const confirmPwd = e.target.value;
+    setConfirmPwd(confirmPwd)
+    setConfirmPwdErr(false)
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (userName.length <= 4) {
+      setUnameErr(true);
+      return;
     }
-  
-    const handlePassword = (e) =>{
-      const pwd = e.target.value;
-       setPassword(pwd)
-       setPwdErr(false)
+    if (password.length <= 5) {
+      setPwdErr(true);
+      return;
     }
 
-    const handleConfirmPassword = (e) =>{
-      const confirmPwd = e.target.value;
-      setConfirmPwd(confirmPwd)
-      setConfirmPwdErr(false)
+    if (password !== confirmPwd) {
+      setConfirmPwdErr(true)
+      return;
     }
 
-    const handleSubmit = (e) =>{
-      e.preventDefault();
-      if( userName.length <=4){
-        setUnameErr(true);
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    var raw = JSON.stringify({
+      "username": userName,
+      password
+    });
+
+    var requestOptions = {
+      method: 'POST',
+      headers: myHeaders,
+      body: raw
+    };
+    try {
+      const response = await fetch("http://localhost:3030/api/signup", requestOptions);
+      const json = await response.json();
+      if (response.ok) {
+        console.log(json);
+        setValue("2");
+      } else {
+        alert(json.error);
         return;
       }
-      if( password.length <=5){
-        setPwdErr(true);
-        return;
-      }
-
-      if(password !== confirmPwd){
-        setConfirmPwdErr(true)
-        return;
-      }
-
-      var myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/json");
-
-      var raw = JSON.stringify({
-        "username": userName,
-        password
-      });
-
-      var requestOptions = {
-        method: 'POST',
-        headers: myHeaders,
-        body: raw
-      };
-
-      fetch("http://localhost:3030/api/signup", requestOptions)
-        .then(response => response.json())
-        .then((result) => {
-           console.log(result)
-           setValue("2");
-        })
-        .catch((error)=>{
-          console.log(error)
-        });
-           
+    }
+    catch (err) {
+      console.log('error', err)
     }
 
-  
-  
-      return  <>
-  <form onSubmit={handleSubmit}>
-  <Paper style={{ padding: 30 }}>
+  }
+
+  return <>
+    <form onSubmit={handleSubmit}>
+      <Paper style={{ padding: 30 }}>
         <Grid
           container
           spacing={3}
@@ -85,8 +87,8 @@ const SignUp = ({ setValue}) =>{
           alignItems={'center'}
         >
           <Grid item>
-            <TextField  required error={unameErr}
-           helperText={unameErr ? "Please enter atleast 5 characters" : ""} onChange={handleUserName} label="Username"></TextField>
+            <TextField required error={unameErr}
+              helperText={unameErr ? "Please enter atleast 5 characters" : ""} onChange={handleUserName} label="Username"></TextField>
           </Grid>
           <Grid item>
             <TextField required error={pwdErr} helperText={pwdErr ? "Please enter atleast 6 characters" : ""} onChange={handlePassword} label="Password" type={'password'}></TextField>
@@ -99,10 +101,10 @@ const SignUp = ({ setValue}) =>{
           </Grid>
         </Grid>
       </Paper>
-      </form>
-  </>  
-   
-    
+    </form>
+  </>
+
+
 }
 
 export default SignUp;
