@@ -2,7 +2,7 @@ import { Button, Paper, Grid, TextField, FormControl } from '@mui/material';
 import {useRef, useState} from "react";
 
 
-const SignUp = () =>{
+const SignUp = ({ setValue}) =>{
   const [userName, setUserName] = useState("")
   const [password, setPassword] = useState("")
   const [unameErr, setUnameErr] = useState(false);
@@ -45,8 +45,31 @@ const SignUp = () =>{
         setConfirmPwdErr(true)
         return;
       }
-      console.log(userName)
-      console.log(password)
+
+      var myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+
+      var raw = JSON.stringify({
+        "username": userName,
+        password
+      });
+
+      var requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: raw
+      };
+
+      fetch("http://localhost:3030/api/signup", requestOptions)
+        .then(response => response.json())
+        .then((result) => {
+           console.log(result)
+           setValue("2");
+        })
+        .catch((error)=>{
+          console.log(error)
+        });
+           
     }
 
   
@@ -72,7 +95,7 @@ const SignUp = () =>{
             <TextField required error={confirmPwdErr} helperText={confirmPwdErr ? "Please enter same password" : ""} onChange={handleConfirmPassword} label="Confirm Password" type={'password'}></TextField>
           </Grid>
           <Grid item>
-            <Button fullWidth variant="contained" type="submit"> Login </Button>
+            <Button fullWidth variant="contained" type="submit"> Signup </Button>
           </Grid>
         </Grid>
       </Paper>

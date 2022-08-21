@@ -26,10 +26,10 @@ const Layout = () => {
         <PhoneBook />
         </TabPanel>
         <TabPanel value="2">
-          <LogIn/>
+          <LogIn setValue={setValue}/>
         </TabPanel>
         <TabPanel value="3">
-        <SignUp/>
+        <SignUp setValue={setValue}/>
         </TabPanel>
       </TabContext>
     </Box>

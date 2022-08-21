@@ -2,7 +2,7 @@ import { Button, FormControl, Grid, Input,InputLabel, Paper, TextField} from '@m
 import {useRef, useState} from "react";
 
 
-const LogIn = () =>{
+const LogIn = ({setValue}) =>{
 const [userName, setUserName] = useState("")
 const [password, setPassword] = useState("")
 const [unameErr, setUnameErr] = useState(false);
@@ -29,8 +29,30 @@ const [pwdErr, setPwdErr] = useState(false);
     if( password.length <=5){
       setPwdErr(true)
     }
-    console.log(userName)
-    console.log(password)
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    var raw = JSON.stringify({
+      "username": userName,
+      password
+    });
+
+    var requestOptions = {
+      method: 'POST',
+      headers: myHeaders,
+      body: raw
+    };
+
+    fetch("http://localhost:3030/api/login", requestOptions)
+      .then(response => response.json())
+      .then((result) => {
+        console.log(result);
+        setValue("1");
+      })
+      .catch((error) => {
+        console.log('error', error)
+        setValue("3");
+      });
   }
 
     return  <>
